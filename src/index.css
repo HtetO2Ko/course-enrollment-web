@@ -1,0 +1,36 @@
+@import url('https://googleapis.com');
+@import "tailwindcss";
+
+@theme {
+  --color-*: initial;
+  --color-surface: #FFFFFF;
+  --color-maincolor: #000000;
+
+  --color-button-txt: #FFFFFF;
+  --color-button-color: #0072FF;
+
+  --color-secondary-button-txt: #000000;
+  --color-secondary-button-color: #000000;
+
+  --color-selected-color: #0066E6;
+  --color-unselected-color: #000000;
+
+  --font-sans: "Inter", system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-roboto: "Roboto", system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-surface: #0B1120;
+  --color-maincolor: #F8FAFC;
+
+  --color-button-txt: #FFFFFF;
+  --color-button-color: #1D82FF;
+
+  --color-secondary-button-txt: #F8FAFC;
+  --color-secondary-button-color: #1E293B;
+
+  --color-selected-color: #3898FF;
+  --color-unselected-color: #94A3B8;
+}
