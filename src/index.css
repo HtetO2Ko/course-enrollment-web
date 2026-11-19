@@ -15,6 +15,13 @@
   --color-selected-color: #0066E6;
   --color-unselected-color: #000000;
 
+  --color-lvl-bgr-bg-color: #E6F7F8;
+  --color-lvl-bgr-txt-color: #005C8A;
+  --color-lvl-itm-bg-color: #00C2CB;
+  --color-lvl-itm-txt-color: #FFFFFF;
+  --color-lvl-adv-bg-color: #1A2B4C;
+  --color-lvl-adv-txt-color: #00E5EE;
+
   --font-sans: "Inter", system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-roboto: "Roboto", system-ui, -apple-system, 'Segoe UI', sans-serif;
 }

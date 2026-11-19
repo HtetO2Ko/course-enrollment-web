@@ -1,5 +1,11 @@
 {
   "home": "Home",
   "contact": "Contact",
-  "login": "Log In"
+  "login": "Log In",
+
+  "upcoming-batches": "Upcoming Batches",
+  "ongoing-batches": "Ongoing Batches",
+  "duration": "Duration",
+  "time": "Time",
+  "start-date": "Start Date"
 }
