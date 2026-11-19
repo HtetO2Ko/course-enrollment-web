@@ -54,7 +54,7 @@ export default function BatchCard({ batch }: BatchCardProps) {
 function getLevel(level: string) {
   const baseclass =
     "h-8 flex justify-center items-center px-3 rounded-md text-sm";
-  if (level === "BEGINNER") {
+  if (level.toUpperCase() === "BEGINNER") {
     return (
       <div
         className={baseclass + " bg-lvl-bgr-bg-color text-lvl-bgr-txt-color"}
@@ -62,7 +62,7 @@ function getLevel(level: string) {
         {level}
       </div>
     );
-  } else if (level === "INTERMEDIATE") {
+  } else if (level.toUpperCase() === "INTERMEDIATE") {
     return (
       <div
         className={baseclass + " bg-lvl-itm-bg-color text-lvl-itm-txt-color"}
@@ -70,7 +70,7 @@ function getLevel(level: string) {
         {level}
       </div>
     );
-  } else if (level === "ADVANCED") {
+  } else if (level.toUpperCase() === "ADVANCED") {
     return (
       <div
         className={baseclass + " bg-lvl-adv-bg-color text-lvl-adv-txt-color"}
