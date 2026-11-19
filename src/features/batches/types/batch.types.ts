@@ -1,3 +1,5 @@
+export type BatchStatus = "upcoming" | "ongoing";
+
 export interface Course {
   courseid: string;
   title: string;
@@ -5,6 +7,8 @@ export interface Course {
   description: string;
   fees: number;
   duration: number;
+  outlines: string;
+  prerequisite: string;
   imageURL: string;
 }
 

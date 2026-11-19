@@ -26,3 +26,18 @@ export const getOngoingBatches = async (): Promise<Batch[]> => {
 
   return data.data.data;
 };
+
+export const getBatchById = async (id: string): Promise<Batch> => {
+  const { data } = await publicApi.get<ApiResponse<Batch>>(
+    "/batch/getBatchByID",
+    {
+      params: { id },
+    },
+  );
+
+  if (!data.success) {
+    throw new Error(data.message);
+  }
+
+  return data.data;
+};

@@ -26,3 +26,12 @@ export function formatTime(time: string): string {
 
   return `${formattedHours}:${String(minutes).padStart(2, "0")} ${period}`;
 }
+
+export function formatDate(date: string): string {
+  return new Date(date).toLocaleDateString("en-US", {
+    timeZone: "UTC",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+}

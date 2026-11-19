@@ -25,7 +25,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-dvh bg-surface">
-      <header className="sticky flex justify-center bg-surface w-full shadow-md font-sans transition-colors duration-200">
+      <header className="fixed top-0 left-0 z-50 flex w-full justify-center bg-surface shadow-md font-sans transition-colors duration-200">
         <div className="flex justify-between items-center w-[95%] sm:w-[90%] md:[85%] h-16">
           <div className="flex items-center">
             <img className="h-10 w-10 mr-2" src={LogoImg} alt="Logo" />
@@ -115,7 +115,7 @@ export default function Layout() {
           </div>
         </div>
       </header>
-      <main className="mx-auto w-[95%] sm:w-[90%] md:[85%]">
+      <main className="mx-auto w-[95%] pt-16 sm:w-[90%] md:w-[85%]">
         <Outlet />
       </main>
     </div>

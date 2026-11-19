@@ -6,13 +6,12 @@ export default function Home() {
   const upcoming = useUpcomingBatches();
   const ongoing = useOngoingBatches();
 
-  console.log(`${ongoing.data?.length} ongoing`);
-
   return (
     <div>
       <BatchSection
         title="upcoming-batches"
         batches={upcoming.data}
+        status="upcoming"
         isLoading={upcoming.isPending}
         isError={upcoming.isError}
       />
@@ -20,6 +19,7 @@ export default function Home() {
       <BatchSection
         title="ongoing-batches"
         batches={ongoing.data}
+        status="ongoing"
         isLoading={ongoing.isPending}
         isError={ongoing.isError}
       />

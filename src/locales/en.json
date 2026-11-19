@@ -5,7 +5,12 @@
 
   "upcoming-batches": "Upcoming Batches",
   "ongoing-batches": "Ongoing Batches",
+
+  "level": "Level",
   "duration": "Duration",
   "time": "Time",
-  "start-date": "Start Date"
+  "start-date": "Start Date",
+  "fees": "Course Fees",
+
+  "batch-info": "Batch Information"
 }
