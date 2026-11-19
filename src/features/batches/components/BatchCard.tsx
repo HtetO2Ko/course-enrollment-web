@@ -11,14 +11,27 @@ export default function BatchCard({ batch }: BatchCardProps) {
   const { t } = useTranslation();
 
   return (
-    <article className="overflow-hidden rounded-xl shadow-md font-roboto">
+    <article
+      className="
+  overflow-hidden
+  rounded-2xl
+  cursor-pointer
+  border border-card-border
+  bg-card
+  shadow-sm
+  transition-all duration-300
+  hover:-translate-y-1
+  hover:shadow-lg
+  font-roboto
+"
+    >
       <img
         src={course.imageURL}
         alt={course.title}
-        className="h-48 w-full object-cover"
+        className="h-48 w-full object-cover transition-transform duration-300"
       />
 
-      <div className="p-4">
+      <div className="p-5">
         <div className="flex justify-between pb-3">
           <div>
             <h3 className="text-lg font-semibold text-maincolor">

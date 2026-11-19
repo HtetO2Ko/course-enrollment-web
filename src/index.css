@@ -22,6 +22,9 @@
   --color-lvl-adv-bg-color: #1A2B4C;
   --color-lvl-adv-txt-color: #00E5EE;
 
+  --color-card: #FFFFFF;
+  --color-card-border: #E5E7EB;
+
   --font-sans: "Inter", system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-roboto: "Roboto", system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
@@ -40,4 +43,7 @@
 
   --color-selected-color: #3898FF;
   --color-unselected-color: #94A3B8;
+
+  --color-card: #151F32;
+  --color-card-border: #273449;
 }
