@@ -10,16 +10,21 @@ declare module "axios" {
   }
 }
 
-api.interceptors.request.use((config) => {
-  const accessToken = tokenStore.getAccessToken();
+// Attach access token to every protected API request.
+api.interceptors.request.use(
+  (config) => {
+    const accessToken = tokenStore.getAccessToken();
 
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
 
-  return config;
-});
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
 
+// Prevent multiple simultaneous token refresh requests.
 let refreshPromise: Promise<string> | null = null;
 
 async function refreshSession(): Promise<string> {
@@ -30,14 +35,18 @@ async function refreshSession(): Promise<string> {
   }
 
   try {
+    // First, try to renew the access token.
     const newAccessToken = await renewAccessToken(currentRefreshToken);
 
     tokenStore.setAccessToken(newAccessToken);
 
     return newAccessToken;
   } catch (error) {
-    const message = error instanceof Error ? error.message : "";
+    const message =
+      (error as { response?: { data?: { message?: string } } })?.response?.data
+        ?.message ?? (error instanceof Error ? error.message : "");
 
+    // Only renew the refresh token if it has expired.
     if (message !== "Invalid or expired refresh token") {
       throw error;
     }
@@ -54,6 +63,7 @@ async function refreshSession(): Promise<string> {
   }
 }
 
+// Handle expired access tokens.
 api.interceptors.response.use(
   (response) => response,
 
@@ -66,12 +76,14 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    const status = error.response?.status;
     const message = error.response?.data?.message;
 
     const isExpired =
-      error.response?.status === 401 ||
+      status === 401 ||
       message === "Session expired: Please authenticate again";
 
+    // Do not retry the same request more than once.
     if (!isExpired || originalRequest._retry) {
       return Promise.reject(error);
     }

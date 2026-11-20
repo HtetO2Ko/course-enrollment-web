@@ -7,6 +7,8 @@ import {
   formatDate,
 } from "../../../utils/formatters";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../../../context/AuthContext";
+import { useMyEnrollments } from "../../enrollments/hooks/useMyEnrollments";
 
 interface BatchCardProps {
   batch: Batch;
@@ -44,6 +46,13 @@ function getLevel(level: string) {
 export default function BatchCard({ batch, status }: BatchCardProps) {
   const location = useLocation();
   const { t } = useTranslation();
+  const { isAuthenticated } = useAuth();
+
+  const { data: enrollments } = useMyEnrollments(isAuthenticated);
+
+  const enrollment = enrollments?.find(
+    (item) => item.batchid === batch.batchid,
+  );
 
   const { course, batchCode, startDate, classDays, classTime } = batch;
 
@@ -57,11 +66,25 @@ export default function BatchCard({ batch, status }: BatchCardProps) {
       className="block"
     >
       <article className="overflow-hidden rounded-2xl border border-card-border bg-card font-roboto shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-        <img
-          src={course.imageURL}
-          alt={course.title}
-          className="h-48 w-full object-cover"
-        />
+        <div className="relative">
+          <img
+            src={course.imageURL}
+            alt={course.title}
+            className="h-48 w-full object-cover"
+          />
+
+          {enrollment && (
+            <span
+              className={`absolute right-3 top-3 rounded-full px-3 py-1 text-xs font-semibold shadow ${
+                enrollment.isWaiting
+                  ? "bg-amber-100 text-amber-800"
+                  : "bg-green-100 text-green-800"
+              }`}
+            >
+              {enrollment.isWaiting ? "Waiting List" : "Enrolled"}
+            </span>
+          )}
+        </div>
 
         <div className="p-4">
           <div className="flex items-start justify-between gap-3 pb-3">

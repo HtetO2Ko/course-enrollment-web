@@ -15,31 +15,31 @@ interface RefreshTokenData {
   refreshToken: string;
 }
 
-export const renewAccessToken = async (refreshToken: string) => {
+export const renewAccessToken = async (
+  refreshToken: string,
+): Promise<string> => {
   const { data } = await authApi.post<ApiResponse<AccessTokenData>>(
     "/auth/renew-access-token",
-    {
-      refreshToken,
-    },
+    { refreshToken },
   );
 
-  if (!data.success || !data.data) {
-    throw new Error(data.message);
+  if (!data.success || !data.data?.accessToken) {
+    throw new Error(data.message || "Failed to renew access token");
   }
 
   return data.data.accessToken;
 };
 
-export const renewRefreshToken = async (refreshToken: string) => {
+export const renewRefreshToken = async (
+  refreshToken: string,
+): Promise<string> => {
   const { data } = await authApi.post<ApiResponse<RefreshTokenData>>(
     "/auth/renew-refresh-token",
-    {
-      refreshToken,
-    },
+    { refreshToken },
   );
 
-  if (!data.success || !data.data) {
-    throw new Error(data.message);
+  if (!data.success || !data.data?.refreshToken) {
+    throw new Error(data.message || "Failed to renew refresh token");
   }
 
   return data.data.refreshToken;

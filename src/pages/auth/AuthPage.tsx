@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
+
 import {
   loginUser,
   registerUser,
 } from "../../features/auth/services/auth.service";
+
 import { useAuth } from "../../context/AuthContext";
 
 export default function AuthPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
   const { login } = useAuth();
 
   const isLogin = location.pathname === "/login";
@@ -24,17 +27,19 @@ export default function AuthPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     setError("");
-    setSuccess("");
     setIsSubmitting(true);
 
     try {
       if (isLogin) {
-        const result = await loginUser({ identifier, password });
+        const result = await loginUser({
+          identifier,
+          password,
+        });
 
         login(result.accessToken, result.refreshToken, result.user);
 
@@ -48,11 +53,12 @@ export default function AuthPage() {
           role: "USER",
         });
 
-        setSuccess("Account created successfully. Please log in.");
-        navigate(`/login?redirect=${encodeURIComponent(redirectTo)}`);
+        navigate(`/login?redirect=${encodeURIComponent(redirectTo)}`, {
+          replace: true,
+        });
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setIsSubmitting(false);
     }
@@ -67,11 +73,13 @@ export default function AuthPage() {
         <ArrowLeft className="size-4" />
         Back to Home
       </Link>
+
       <div className="w-full max-w-md rounded-2xl border border-card-border bg-card p-6 shadow-lg sm:p-8">
         <div className="mb-7 text-center">
           <h1 className="text-2xl font-bold text-maincolor">
             {isLogin ? "Welcome Back" : "Create an Account"}
           </h1>
+
           <p className="mt-2 text-sm text-unselected-color">
             {isLogin
               ? "Log in to continue to your account."
@@ -158,8 +166,6 @@ export default function AuthPage() {
               {error}
             </p>
           )}
-
-          {success && <p className="text-sm text-green-600">{success}</p>}
 
           <button
             type="submit"

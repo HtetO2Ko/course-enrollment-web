@@ -7,6 +7,7 @@ const defaultConfig = {
   headers: {
     "Content-Type": "application/json",
   },
+  timeout: 15000,
 };
 
 export const publicApi = axios.create(defaultConfig);

@@ -1,5 +1,13 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
-import type { AuthUser } from "../features/auth/services/auth.service";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
+
+import { tokenStore } from "../services/api/token";
+import type { AuthUser } from "../features/auth/types/auth.types";
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -12,27 +20,37 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+function getStoredUser(): AuthUser | null {
+  try {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? (JSON.parse(storedUser) as AuthUser) : null;
+  } catch {
+    localStorage.removeItem("user");
+    return null;
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [accessToken, setAccessToken] = useState<string | null>(() =>
-    localStorage.getItem("accessToken"),
+    tokenStore.getAccessToken(),
   );
 
   const [refreshToken, setRefreshToken] = useState<string | null>(() =>
-    localStorage.getItem("refreshToken"),
+    tokenStore.getRefreshToken(),
   );
 
-  const [user, setUser] = useState<AuthUser | null>(() => {
-    const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
+  const [user, setUser] = useState<AuthUser | null>(getStoredUser);
 
   const login = (
     newAccessToken: string,
     newRefreshToken: string,
     newUser: AuthUser,
   ) => {
-    localStorage.setItem("accessToken", newAccessToken);
-    localStorage.setItem("refreshToken", newRefreshToken);
+    tokenStore.setTokens({
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    });
+
     localStorage.setItem("user", JSON.stringify(newUser));
 
     setAccessToken(newAccessToken);
@@ -41,8 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    tokenStore.clear();
     localStorage.removeItem("user");
 
     setAccessToken(null);
@@ -50,13 +67,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      logout();
+    };
+
+    window.addEventListener("auth:session-expired", handleSessionExpired);
+
+    return () => {
+      window.removeEventListener("auth:session-expired", handleSessionExpired);
+    };
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
         user,
         accessToken,
         refreshToken,
-        isAuthenticated: Boolean(accessToken),
+        isAuthenticated: Boolean(accessToken && user),
         login,
         logout,
       }}

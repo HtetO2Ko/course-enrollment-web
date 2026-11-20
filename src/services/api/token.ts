@@ -1,25 +1,33 @@
-let accessToken: string | null = null;
-let refreshToken: string | null = null;
+
+export interface Tokens {
+  accessToken: string;
+  refreshToken: string;
+}
 
 export const tokenStore = {
-  getAccessToken: () => accessToken,
-  getRefreshToken: () => refreshToken,
-
-  setAccessToken: (token: string) => {
-    accessToken = token;
+  getAccessToken: (): string | null => {
+    return localStorage.getItem("accessToken");
   },
 
-  setRefreshToken: (token: string) => {
-    refreshToken = token;
+  getRefreshToken: (): string | null => {
+    return localStorage.getItem("refreshToken");
   },
 
-  setTokens: (tokens: { accessToken: string; refreshToken: string }) => {
-    accessToken = tokens.accessToken;
-    refreshToken = tokens.refreshToken;
+  setAccessToken: (token: string): void => {
+    localStorage.setItem("accessToken", token);
   },
 
-  clear: () => {
-    accessToken = null;
-    refreshToken = null;
+  setRefreshToken: (token: string): void => {
+    localStorage.setItem("refreshToken", token);
+  },
+
+  setTokens: (tokens: Tokens): void => {
+    localStorage.setItem("accessToken", tokens.accessToken);
+    localStorage.setItem("refreshToken", tokens.refreshToken);
+  },
+
+  clear: (): void => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
   },
 };

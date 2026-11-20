@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Batch, BatchStatus } from "../../batches/types/batch.types";
 import {
@@ -9,6 +9,9 @@ import {
 } from "../../../utils/formatters";
 import InfoItem from "./InfoItem";
 import { useAuth } from "../../../context/AuthContext";
+import { useMyEnrollments } from "../../enrollments/hooks/useMyEnrollments";
+import { useCreateEnrollment } from "../../enrollments/hooks/useCreateEnrollment";
+import { useNavigate } from "react-router";
 
 interface BatchInformationProps {
   batch: Batch;
@@ -19,13 +22,10 @@ function getLevelStyle(level: string): string {
   switch (level) {
     case "BEGINNER":
       return "bg-lvl-bgr-bg-color text-lvl-bgr-txt-color";
-
     case "INTERMEDIATE":
       return "bg-lvl-itm-bg-color text-lvl-itm-txt-color";
-
     case "ADVANCED":
       return "bg-lvl-adv-bg-color text-lvl-adv-txt-color";
-
     default:
       return "bg-gray-100 text-gray-700";
   }
@@ -37,11 +37,52 @@ export default function BatchInformation({
 }: BatchInformationProps) {
   const { t } = useTranslation();
   const { course } = batch;
-
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
-  const enrollmentPath = `/batches/${batch.batchid}/enroll`;
-  const loginPath = `/login?redirect=${encodeURIComponent(enrollmentPath)}`;
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const { data: enrollments, isPending: isCheckingEnrollment } =
+    useMyEnrollments(isAuthenticated);
+
+  const createEnrollmentMutation = useCreateEnrollment();
+
+  const enrollment = enrollments?.find(
+    (item) => item.batchid === batch.batchid,
+  );
+
+  const isWaiting = status === "ongoing";
+
+  const handleEnrollment = async () => {
+    if (!isAuthenticated) {
+      const enrollmentPath = `/batches/${batch.batchid}/enroll?isWaiting=${isWaiting}`;
+      navigate(`/login?redirect=${encodeURIComponent(enrollmentPath)}`);
+      return;
+    }
+
+    if (!batch.batchid || enrollment || createEnrollmentMutation.isPending) {
+      return;
+    }
+
+    setError("");
+    setSuccess("");
+
+    try {
+      const result = await createEnrollmentMutation.mutateAsync({
+        batchid: batch.batchid,
+        isWaiting,
+      });
+
+      setSuccess(
+        result.isWaiting
+          ? "You have been added to the waiting list."
+          : "Enrollment successful!",
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Enrollment failed.");
+    }
+  };
 
   return (
     <aside className="lg:sticky lg:top-24">
@@ -82,20 +123,56 @@ export default function BatchInformation({
         </div>
 
         <div className="mt-8">
-          {status === "upcoming" ? (
-            <Link
-              to={isAuthenticated ? enrollmentPath : loginPath}
-              className="block w-full rounded-xl bg-button-color px-5 py-3 text-center font-semibold text-button-txt transition-opacity hover:opacity-90"
+          {enrollment ? (
+            <div
+              className={`rounded-xl px-5 py-3 text-center font-semibold ${
+                enrollment.isWaiting
+                  ? "bg-amber-100 text-amber-800"
+                  : "bg-green-100 text-green-800"
+              }`}
             >
-              Enroll Now
-            </Link>
+              {enrollment.isWaiting
+                ? "You are on the waiting list"
+                : "You are already enrolled"}
+            </div>
+          ) : isAuthenticated && isCheckingEnrollment ? (
+            <div className="rounded-xl bg-gray-100 px-5 py-3 text-center text-sm text-gray-500">
+              Checking enrollment...
+            </div>
           ) : (
-            <Link
-              to="/#upcoming-batches"
-              className="block w-full rounded-xl bg-secondary-button-color px-5 py-3 text-center font-semibold text-secondary-button-txt transition-opacity hover:opacity-90"
+            <button
+              type="button"
+              onClick={handleEnrollment}
+              disabled={createEnrollmentMutation.isPending}
+              className={`w-full rounded-xl px-5 py-3 text-center font-semibold transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 ${
+                status === "upcoming"
+                  ? "bg-button-color text-button-txt"
+                  : "border border-button-color bg-button-color/10 text-button-color"
+              }`}
             >
-              Wait for Another Batch
-            </Link>
+              {createEnrollmentMutation.isPending ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  Submitting...
+                </span>
+              ) : status === "upcoming" ? (
+                "Enroll Now"
+              ) : (
+                "Wait for Another Batch"
+              )}
+            </button>
+          )}
+
+          {error && (
+            <p role="alert" className="mt-3 text-sm text-red-500">
+              {error}
+            </p>
+          )}
+
+          {success && (
+            <p role="status" className="mt-3 text-sm text-green-600">
+              {success}
+            </p>
           )}
         </div>
       </article>
