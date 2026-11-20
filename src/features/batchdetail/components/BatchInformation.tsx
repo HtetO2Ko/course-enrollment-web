@@ -8,6 +8,7 @@ import {
   formatTime,
 } from "../../../utils/formatters";
 import InfoItem from "./InfoItem";
+import { useAuth } from "../../../context/AuthContext";
 
 interface BatchInformationProps {
   batch: Batch;
@@ -36,6 +37,11 @@ export default function BatchInformation({
 }: BatchInformationProps) {
   const { t } = useTranslation();
   const { course } = batch;
+
+  const { isAuthenticated } = useAuth();
+
+  const enrollmentPath = `/batches/${batch.batchid}/enroll`;
+  const loginPath = `/login?redirect=${encodeURIComponent(enrollmentPath)}`;
 
   return (
     <aside className="lg:sticky lg:top-24">
@@ -78,17 +84,17 @@ export default function BatchInformation({
         <div className="mt-8">
           {status === "upcoming" ? (
             <Link
-              to={`/login?redirect=${encodeURIComponent(`/batches/${batch.batchid}/enroll`)}`}
-              className="block rounded-lg bg-button-color px-5 py-3 text-center text-sm font-semibold text-button-txt transition hover:opacity-90"
+              to={isAuthenticated ? enrollmentPath : loginPath}
+              className="block w-full rounded-xl bg-button-color px-5 py-3 text-center font-semibold text-button-txt transition-opacity hover:opacity-90"
             >
               Enroll Now
             </Link>
           ) : (
             <Link
               to="/#upcoming-batches"
-              className="block rounded-lg bg-secondary-button-color px-5 py-3 text-center text-sm font-semibold text-secondary-button-txt transition hover:opacity-90"
+              className="block w-full rounded-xl bg-secondary-button-color px-5 py-3 text-center font-semibold text-secondary-button-txt transition-opacity hover:opacity-90"
             >
-              Wait for another batch
+              Wait for Another Batch
             </Link>
           )}
         </div>

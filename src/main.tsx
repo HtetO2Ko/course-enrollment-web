@@ -7,13 +7,16 @@ import QueryProvider from "./providers/QueryProvider";
 import "./index.css";
 import "./i18n";
 import "./services/api/interceptors";
+import { AuthProvider } from "./context/AuthContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryProvider>
       <BrowserRouter>
         <ThemeProvider>
-          <App />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
         </ThemeProvider>
       </BrowserRouter>
     </QueryProvider>
