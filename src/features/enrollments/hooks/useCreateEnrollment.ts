@@ -8,14 +8,16 @@ export function useCreateEnrollment() {
   return useMutation({
     mutationFn: createEnrollment,
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: enrollmentKeys.mine(),
-      });
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: enrollmentKeys.mine(),
+        }),
 
-      queryClient.invalidateQueries({
-        queryKey: ["batches"],
-      });
+        queryClient.invalidateQueries({
+          queryKey: ["batches"],
+        }),
+      ]);
     },
   });
 }

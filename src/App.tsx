@@ -4,6 +4,7 @@ import Home from "./pages/home/Home";
 import Contact from "./pages/contact/Contact";
 import AuthPage from "./pages/auth/AuthPage";
 import BatchDetail from "./pages/batches/BatchDetail";
+import AccountPage from "./pages/account/AccountPage";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path="/batches/:batchId" element={<BatchDetail />} />
         <Route path="/login" element={<AuthPage />} />
         <Route path="/signup" element={<AuthPage />} />
+        <Route path="/account" element={<AccountPage />} />
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Route>
     </Routes>

@@ -1,5 +1,6 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -15,6 +16,7 @@ interface AuthContextType {
   refreshToken: string | null;
   isAuthenticated: boolean;
   login: (accessToken: string, refreshToken: string, user: AuthUser) => void;
+  updateUser: (updatedUser: Partial<AuthUser>) => void;
   logout: () => void;
 }
 
@@ -58,14 +60,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(newUser);
   };
 
-  const logout = () => {
+  // Update authenticated user information
+  const updateUser = useCallback((updatedUser: Partial<AuthUser>) => {
+    setUser((currentUser) => {
+      if (!currentUser) return currentUser;
+
+      const newUser: AuthUser = {
+        ...currentUser,
+        ...updatedUser,
+      };
+
+      localStorage.setItem("user", JSON.stringify(newUser));
+
+      return newUser;
+    });
+  }, []);
+
+  const logout = useCallback(() => {
     tokenStore.clear();
     localStorage.removeItem("user");
 
     setAccessToken(null);
     setRefreshToken(null);
     setUser(null);
-  };
+  }, []);
 
   useEffect(() => {
     const handleSessionExpired = () => {
@@ -77,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       window.removeEventListener("auth:session-expired", handleSessionExpired);
     };
-  }, []);
+  }, [logout]);
 
   return (
     <AuthContext.Provider
@@ -87,6 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         refreshToken,
         isAuthenticated: Boolean(accessToken && user),
         login,
+        updateUser,
         logout,
       }}
     >
