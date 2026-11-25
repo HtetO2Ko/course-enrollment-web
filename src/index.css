@@ -3,6 +3,7 @@
 
 @theme {
   --color-*: initial;
+  --color-admin-surface: #EEEEEE;
   --color-surface: #FFFFFF;
   --color-maincolor: #000000;
 
@@ -32,6 +33,7 @@
 :root[data-theme='dark'] {
   color-scheme: dark;
 
+  --color-admin-surface: #060B16;
   --color-surface: #0B1120;
   --color-maincolor: #F8FAFC;
 
