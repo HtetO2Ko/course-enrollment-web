@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Navigate } from "react-router";
+import { Link, Navigate } from "react-router";
 
 import { useAuth } from "../../context/AuthContext";
 
@@ -9,6 +9,7 @@ import { useMyEnrollments } from "../../features/enrollments/hooks/useMyEnrollme
 import { useRemoveEnrollment } from "../../features/account/hooks/useRemoveEnrollment";
 
 import type { UpdateProfilePayload } from "../../features/account/types/account.types";
+import { Globe } from "lucide-react";
 
 export default function AccountPage() {
   const { isAuthenticated, user, updateUser } = useAuth();
@@ -71,7 +72,19 @@ export default function AccountPage() {
     <div className="mx-auto max-w-5xl space-y-10 py-8">
       {/* Page heading */}
       <div>
-        <h1 className="text-3xl font-bold text-maincolor">My Account</h1>
+        <div className="flex items-center">
+          <h1 className="text-3xl font-bold text-maincolor">My Account</h1>
+          {user?.role === "ADMIN" && (
+            <Link
+              to="/admin"
+              aria-label="Open admin panel"
+              title="Admin Panel"
+              className="ml-4 text-maincolor transition-colors hover:text-selected-color"
+            >
+              <Globe className="h-5 w-5" />
+            </Link>
+          )}
+        </div>
 
         <p className="mt-2 text-unselected-color">
           Manage your personal information and course enrollments.

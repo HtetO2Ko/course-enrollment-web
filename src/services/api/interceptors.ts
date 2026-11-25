@@ -57,6 +57,8 @@ async function refreshSession(): Promise<string> {
 
     const newAccessToken = await renewAccessToken(newRefreshToken);
 
+    console.log("Access token renewed:", Boolean(newAccessToken));
+
     tokenStore.setAccessToken(newAccessToken);
 
     return newAccessToken;

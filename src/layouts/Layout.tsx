@@ -90,13 +90,19 @@ export default function Layout() {
                 <li className="sm:hidden">
                   {isAuthenticated ? (
                     <div className="flex min-h-12 items-center justify-between gap-3">
-                      <Link
+                      <NavLink
                         to="/account"
                         onClick={() => setMenuOpen(false)}
-                        className="truncate font-medium text-maincolor transition-colors hover:text-selected-color"
+                        className={({ isActive }) =>
+                          `truncate font-medium transition-colors ${
+                            isActive
+                              ? "text-selected-color"
+                              : "text-maincolor hover:text-selected-color"
+                          }`
+                        }
                       >
                         {user?.fullname}
-                      </Link>
+                      </NavLink>
 
                       <button
                         type="button"
@@ -147,12 +153,18 @@ export default function Layout() {
               {/* Desktop authentication */}
               {isAuthenticated ? (
                 <div className="hidden items-center gap-3 sm:flex">
-                  <Link
+                  <NavLink
                     to="/account"
-                    className="max-w-36 truncate font-medium text-maincolor transition-colors hover:text-selected-color"
+                    className={({ isActive }) =>
+                      `max-w-36 truncate font-medium transition-colors ${
+                        isActive
+                          ? "text-selected-color"
+                          : "text-maincolor hover:text-selected-color"
+                      }`
+                    }
                   >
                     {user?.fullname}
-                  </Link>
+                  </NavLink>
 
                   <button
                     type="button"

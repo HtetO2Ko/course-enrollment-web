@@ -6,6 +6,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { tokenStore } from "../services/api/token";
 import type { AuthUser } from "../features/auth/types/auth.types";
@@ -33,6 +34,8 @@ function getStoredUser(): AuthUser | null {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
+
   const [accessToken, setAccessToken] = useState<string | null>(() =>
     tokenStore.getAccessToken(),
   );
@@ -43,22 +46,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const [user, setUser] = useState<AuthUser | null>(getStoredUser);
 
-  const login = (
-    newAccessToken: string,
-    newRefreshToken: string,
-    newUser: AuthUser,
-  ) => {
-    tokenStore.setTokens({
-      accessToken: newAccessToken,
-      refreshToken: newRefreshToken,
-    });
+  // Login
+  const login = useCallback(
+    (newAccessToken: string, newRefreshToken: string, newUser: AuthUser) => {
+      // Clear previous account's cached data.
+      queryClient.clear();
 
-    localStorage.setItem("user", JSON.stringify(newUser));
+      tokenStore.setTokens({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      });
 
-    setAccessToken(newAccessToken);
-    setRefreshToken(newRefreshToken);
-    setUser(newUser);
-  };
+      localStorage.setItem("user", JSON.stringify(newUser));
+
+      setAccessToken(newAccessToken);
+      setRefreshToken(newRefreshToken);
+      setUser(newUser);
+    },
+    [queryClient],
+  );
 
   // Update authenticated user information
   const updateUser = useCallback((updatedUser: Partial<AuthUser>) => {
@@ -76,15 +82,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  // Logout
   const logout = useCallback(() => {
+    // Clear all cached queries and mutations.
+    queryClient.clear();
+
     tokenStore.clear();
     localStorage.removeItem("user");
 
     setAccessToken(null);
     setRefreshToken(null);
     setUser(null);
-  }, []);
+  }, [queryClient]);
 
+  // Handle expired sessions
   useEffect(() => {
     const handleSessionExpired = () => {
       logout();
