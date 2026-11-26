@@ -1,8 +1,18 @@
 import { Plus, Search, RefreshCw, AlertCircle, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import CourseFormModal from "../../features/courses/components/CourseFormModal";
 import CourseTable from "../../features/courses/components/CourseTable";
-import { useCourses } from "../../features/courses/hooks/useCourses";
-import type { Course } from "../../features/courses/types/course.types";
+import DeleteCourseModal from "../../features/courses/components/DeleteCourseModal";
+import {
+  useCourses,
+  useCreateCourse,
+  useDeleteCourse,
+  useUpdateCourse,
+} from "../../features/courses/hooks/useCourses";
+import type {
+  Course,
+  CourseMutationPayload,
+} from "../../features/courses/types/course.types";
 
 type CourseAction = "create" | "edit" | "delete" | null;
 
@@ -16,8 +26,7 @@ export default function CoursesPage() {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      const normalized = search.trim();
-      setDebouncedSearch(normalized);
+      setDebouncedSearch(search.trim());
       setPage(1);
     }, 400);
 
@@ -25,6 +34,9 @@ export default function CoursesPage() {
   }, [search]);
 
   const coursesQuery = useCourses(debouncedSearch, page, limit);
+  const createMutation = useCreateCourse();
+  const updateMutation = useUpdateCourse();
+  const deleteMutation = useDeleteCourse();
 
   const courses = coursesQuery.data?.data ?? [];
   const meta = coursesQuery.data?.meta;
@@ -35,16 +47,21 @@ export default function CoursesPage() {
   };
 
   const openCreate = () => {
+    createMutation.reset();
+    updateMutation.reset();
     setSelectedCourse(null);
     setAction("create");
   };
 
   const openEdit = (course: Course) => {
+    createMutation.reset();
+    updateMutation.reset();
     setSelectedCourse(course);
     setAction("edit");
   };
 
   const openDelete = (course: Course) => {
+    deleteMutation.reset();
     setSelectedCourse(course);
     setAction("delete");
   };
@@ -53,6 +70,40 @@ export default function CoursesPage() {
     setAction(null);
     setSelectedCourse(null);
   };
+
+  const handleFormSubmit = (payload: CourseMutationPayload) => {
+    if (action === "create") {
+      createMutation.mutate(payload, {
+        onSuccess: () => {
+          closeAction();
+        },
+      });
+    } else if (action === "edit" && selectedCourse) {
+      updateMutation.mutate(
+        { courseid: selectedCourse.courseid, payload },
+        {
+          onSuccess: () => {
+            closeAction();
+          },
+        },
+      );
+    }
+  };
+
+  const handleConfirmDelete = (courseid: string) => {
+    deleteMutation.mutate(courseid, {
+      onSuccess: () => {
+        closeAction();
+      },
+    });
+  };
+
+  const isFormOpen = action === "create" || action === "edit";
+  const isFormSubmitting = createMutation.isPending || updateMutation.isPending;
+  const formError =
+    action === "create"
+      ? (createMutation.error as Error | null)?.message
+      : (updateMutation.error as Error | null)?.message;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -176,46 +227,24 @@ export default function CoursesPage() {
         )}
       </div>
 
-      {/* Temporary dialog placeholder */}
-      {action && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-maincolor/40 p-4 backdrop-blur-xs"
-          onClick={closeAction}
-        >
-          <div
-            className="w-full max-w-md rounded-2xl border border-card-border bg-surface p-6 shadow-xl"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <h2 className="text-lg font-semibold text-maincolor">
-              {action === "create"
-                ? "Create Course"
-                : action === "edit"
-                  ? "Edit Course"
-                  : "Delete Course"}
-            </h2>
+      {/* Create / Edit Modal */}
+      <CourseFormModal
+        isOpen={isFormOpen}
+        course={action === "edit" ? selectedCourse : null}
+        isSubmitting={isFormSubmitting}
+        errorMessage={formError}
+        onClose={closeAction}
+        onSubmit={handleFormSubmit}
+      />
 
-            {selectedCourse && (
-              <p className="mt-2 text-sm text-unselected-color">
-                {selectedCourse.title}
-              </p>
-            )}
-
-            <p className="mt-4 text-sm text-unselected-color">
-              The course {action} dialog will be implemented next.
-            </p>
-
-            <div className="mt-6 flex justify-end">
-              <button
-                type="button"
-                onClick={closeAction}
-                className="cursor-pointer rounded-xl bg-button-color px-4 py-2.5 text-sm font-semibold text-button-txt"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Delete Confirmation Modal */}
+      <DeleteCourseModal
+        course={action === "delete" ? selectedCourse : null}
+        isDeleting={deleteMutation.isPending}
+        errorMessage={(deleteMutation.error as Error | null)?.message}
+        onClose={closeAction}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }

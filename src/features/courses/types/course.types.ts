@@ -15,6 +15,17 @@ export interface Course {
   updatedAt: string;
 }
 
+export interface CourseMutationPayload {
+  imageURL: string;
+  title: string;
+  level: CourseLevel;
+  description: string;
+  fees: number;
+  duration: number;
+  outlines: string;
+  prerequisite: string;
+}
+
 export interface CoursePagination {
   total: number;
   newPage: number;

@@ -1,5 +1,7 @@
 import { api } from "../../../services/api/clients";
 import type {
+  Course,
+  CourseMutationPayload,
   GetCoursesParams,
   GetCoursesResponse,
 } from "../types/course.types";
@@ -29,6 +31,52 @@ export const getCourses = async ({
 
   if (!data.success) {
     throw new Error(data.message || "Failed to fetch courses");
+  }
+
+  return data.data;
+};
+
+export const createCourse = async (
+  payload: CourseMutationPayload,
+): Promise<Course> => {
+  const { data } = await api.post<ApiResponse<Course>>(
+    "/course/create",
+    payload,
+  );
+
+  if (!data.success) {
+    throw new Error(data.message || "Failed to create course");
+  }
+
+  return data.data;
+};
+
+export const updateCourse = async (
+  courseid: string,
+  payload: CourseMutationPayload,
+): Promise<Course> => {
+  const { data } = await api.patch<ApiResponse<Course>>(
+    "/course/update",
+    payload,
+    {
+      params: { courseid },
+    },
+  );
+
+  if (!data.success) {
+    throw new Error(data.message || "Failed to update course");
+  }
+
+  return data.data;
+};
+
+export const deleteCourse = async (courseid: string): Promise<Course> => {
+  const { data } = await api.delete<ApiResponse<Course>>("/course/delete", {
+    params: { courseid },
+  });
+
+  if (!data.success) {
+    throw new Error(data.message || "Failed to delete course");
   }
 
   return data.data;

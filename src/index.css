@@ -10,6 +10,10 @@
   --color-button-txt: #FFFFFF;
   --color-button-color: #0072FF;
 
+  --color-delete-button-txt: #FFFFFF;
+  --color-delete-button-color: #DC2626;
+  --color-delete-button-hover: #B91C1C;
+
   --color-secondary-button-txt: #000000;
   --color-secondary-button-color: #000000;
 
@@ -39,6 +43,10 @@
 
   --color-button-txt: #FFFFFF;
   --color-button-color: #1D82FF;
+
+  --color-delete-button-txt: #FFFFFF;
+  --color-delete-button-color: #EF4444;
+  --color-delete-button-hover: #DC2626;
 
   --color-secondary-button-txt: #F8FAFC;
   --color-secondary-button-color: #1E293B;
