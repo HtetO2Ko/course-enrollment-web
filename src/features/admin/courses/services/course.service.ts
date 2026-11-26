@@ -1,4 +1,5 @@
-import { api } from "../../../services/api/clients";
+
+import { api } from "../../../../services/api/clients";
 import type {
   Course,
   CourseMutationPayload,

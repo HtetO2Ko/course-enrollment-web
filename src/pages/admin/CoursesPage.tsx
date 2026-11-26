@@ -1,18 +1,18 @@
 import { Plus, Search, RefreshCw, AlertCircle, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import CourseFormModal from "../../features/courses/components/CourseFormModal";
-import CourseTable from "../../features/courses/components/CourseTable";
-import DeleteCourseModal from "../../features/courses/components/DeleteCourseModal";
+import CourseFormModal from "../../features/admin/courses/components/CourseFormModal";
+import CourseTable from "../../features/admin/courses/components/CourseTable";
+import DeleteCourseModal from "../../features/admin/courses/components/DeleteCourseModal";
 import {
   useCourses,
   useCreateCourse,
   useDeleteCourse,
   useUpdateCourse,
-} from "../../features/courses/hooks/useCourses";
+} from "../../features/admin/courses/hooks/useCourses";
 import type {
   Course,
   CourseMutationPayload,
-} from "../../features/courses/types/course.types";
+} from "../../features/admin/courses/types/course.types";
 
 type CourseAction = "create" | "edit" | "delete" | null;
 

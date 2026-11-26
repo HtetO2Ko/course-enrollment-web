@@ -1,8 +1,7 @@
 import { Pencil, Trash2 } from "lucide-react";
-import DataTable, {
-  type DataTableColumn,
-} from "../../../components/common/DataTable";
 import type { Course } from "../types/course.types";
+import type { DataTableColumn } from "../../../../components/common/DataTable";
+import DataTable from "../../../../components/common/DataTable";
 
 interface CourseTableProps {
   courses: Course[];
