@@ -62,11 +62,18 @@ export default function AdminLayout() {
     <div className="h-dvh flex flex-col md:flex-row bg-admin-surface text-maincolor overflow-hidden transition-colors duration-200">
       {/* Mobile Header (Visible < 768px) */}
       <header className="md:hidden flex items-center justify-between px-4 h-14 bg-surface border-b border-card-border shrink-0">
-        <span className="font-semibold text-base tracking-tight">
-          Admin Panel
-        </span>
+        <div className="flex items-center gap-2 min-w-0">
+          <img
+            src="/favicon.png"
+            alt="Course Enrollment Logo"
+            className="h-7 w-7 rounded-md object-contain shrink-0"
+          />
+          <span className="font-semibold text-base tracking-tight truncate">
+            Course Enrollment
+          </span>
+        </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 shrink-0">
           <Link
             to="/"
             title="User Site"
@@ -118,29 +125,33 @@ export default function AdminLayout() {
         `}
       >
         {/* Sidebar Header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-card-border shrink-0">
-          <span
-            className={`font-bold text-lg whitespace-nowrap overflow-hidden transition-all duration-200
-              block md:hidden
-              ${isCollapsed ? "lg:hidden" : "lg:block"}
-            `}
-          >
-            Admin Panel
-          </span>
-
-          <span
-            className={`font-bold text-lg mx-auto hidden
-              md:block
-              ${isCollapsed ? "lg:block" : "lg:hidden"}
-            `}
-          >
-            AP
-          </span>
+        <div
+          className={`h-16 flex items-center border-b border-card-border shrink-0 ${
+            isCollapsed
+              ? "justify-center px-2"
+              : "justify-between px-4 md:justify-center md:px-2 lg:justify-between lg:px-4"
+          }`}
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <img
+              src="/favicon.png"
+              alt="Course Enrollment Logo"
+              className="h-8 w-8 rounded-md object-contain shrink-0"
+            />
+            <span
+              className={`font-bold text-base whitespace-nowrap overflow-hidden transition-all duration-200
+                inline md:hidden
+                ${isCollapsed ? "lg:hidden" : "lg:inline"}
+              `}
+            >
+              Course Enrollment
+            </span>
+          </div>
 
           <button
             type="button"
             onClick={() => setIsCollapsed((prev) => !prev)}
-            className="hidden lg:flex items-center justify-center p-1.5 rounded-lg border border-card-border text-maincolor hover:bg-maincolor/5 transition-colors cursor-pointer"
+            className="hidden lg:flex items-center justify-center p-1.5 rounded-lg border border-card-border text-maincolor hover:bg-maincolor/5 transition-colors cursor-pointer shrink-0"
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {isCollapsed ? (
@@ -153,7 +164,7 @@ export default function AdminLayout() {
           <button
             type="button"
             onClick={() => setIsMobileOpen(false)}
-            className="md:hidden p-1.5 rounded-lg text-maincolor hover:bg-maincolor/5 cursor-pointer"
+            className="md:hidden p-1.5 rounded-lg text-maincolor hover:bg-maincolor/5 cursor-pointer shrink-0"
             aria-label="Close menu"
           >
             <X className="w-5 h-5" />
