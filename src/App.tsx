@@ -8,7 +8,7 @@ import AccountPage from "./pages/account/AccountPage";
 import AdminLayout from "./layouts/AdminLayout";
 import BatchesPage from "./pages/admin/BatchesPage";
 import CoursesPage from "./pages/admin/CoursesPage";
-import EnrollStudentsPage from "./pages/admin/EnrollStudentsPage";
+import ApproveStudentPage from "./pages/admin/ApproveStudentPage";
 
 export default function App() {
   return (
@@ -26,7 +26,7 @@ export default function App() {
         <Route index element={<Navigate to="courses" replace />} />
         <Route path="courses" element={<CoursesPage />} />
         <Route path="batches" element={<BatchesPage />} />
-        <Route path="enrollments" element={<EnrollStudentsPage />} />
+        <Route path="approvestudent" element={<ApproveStudentPage />} />
       </Route>
     </Routes>
   );

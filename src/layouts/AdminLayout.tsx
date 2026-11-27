@@ -28,8 +28,8 @@ const ADMIN_NAV_ITEMS = [
     icon: CalendarDays,
   },
   {
-    title: "Enroll Students",
-    path: "/admin/enrollments",
+    title: "Approve Student",
+    path: "/admin/approvestudent",
     icon: Users,
   },
 ];
